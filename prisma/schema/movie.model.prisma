@@ -2,8 +2,8 @@ model Movie {
     id        Int      @id @default(autoincrement())
     title     String
 
-    director  Director @relation(fields: [directorId], references: [id])
-    directorId Int
+    director  Director @relation(fields: [director_Id], references: [id])
+    director_Id Int
 
     actors    MovieActor[]
     genres    MovieGenre[]

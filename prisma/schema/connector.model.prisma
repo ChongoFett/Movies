@@ -1,17 +1,17 @@
 model MovieActor {
-    movieId Int
-    actorId Int
-    movie   Movie @relation(fields: [movieId], references: [id])
-    actor   Actor @relation(fields: [actorId], references: [id])
+    movie_Id Int
+    actor_Id Int
+    movie   Movie @relation(fields: [movie_Id], references: [id])
+    actor   Actor @relation(fields: [actor_Id], references: [id])
 
-    @@id([movieId, actorId])
+    @@id([movie_Id, actor_Id])
 }
 
 model MovieGenre {
-    movieId Int
-    genreId Int
-    movie   Movie @relation(fields: [movieId], references: [id])
-    genre   Genre @relation(fields: [genreId], references: [id])
+    movie_Id Int
+    genre_Id Int
+    movie   Movie @relation(fields: [movie_Id], references: [id])
+    genre   Genre @relation(fields: [genre_Id], references: [id])
 
-    @@id([movieId, genreId])
+    @@id([movie_Id, genre_Id])
 }
