@@ -89,6 +89,46 @@ class MovieService {
       where: { id: Number(id) },
     });
   }
+  
+  async addActorToMovie(movieId, actorId) {
+    return await prisma.movieActor.create({
+      data: {
+        movie_Id: Number(movieId),
+        actor_Id: Number(actorId),
+      },
+    });
+  }
+
+  async removeActorFromMovie(movieId, actorId) {
+    return await prisma.movieActor.delete({
+      where: {
+        movie_Id_actor_Id: {
+          movie_Id: Number(movieId),
+          actor_Id: Number(actorId),
+        },
+      },
+    });
+  }
+
+  async addGenreToMovie(movieId, genreId) {
+    return await prisma.movieGenre.create({
+      data: {
+        movie_Id: Number(movieId),
+        genre_Id: Number(genreId),
+      },
+    });
+  }
+
+  async removeGenreFromMovie(movieId, genreId) {
+    return await prisma.movieGenre.delete({
+      where: {
+        movie_Id_genre_Id: {
+          movie_Id: Number(movieId),
+          genre_Id: Number(genreId),
+        },
+      },
+    });
+  }
 }
 
 module.exports = new MovieService();

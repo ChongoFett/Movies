@@ -52,4 +52,70 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedMovie = await MovieService.edit(req.params.id, req.body);
+    res.json(updatedMovie);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await MovieService.delete(req.params.id);
+    res.status(204).end();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/:id/actors/:actorId", async (req, res) => {
+  try {
+    const result = await MovieService.addActorToMovie(
+      req.params.id,
+      req.params.actorId
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:id/actors/:actorId", async (req, res) => {
+  try {
+    const result = await MovieService.removeActorFromMovie(
+      req.params.id,
+      req.params.actorId
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/:id/genres/:genreId", async (req, res) => {
+  try {
+    const result = await MovieService.addGenreToMovie(
+      req.params.id,
+      req.params.genreId
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:id/genres/:genreId", async (req, res) => {
+  try {
+    const result = await MovieService.removeGenreFromMovie(
+      req.params.id,
+      req.params.genreId
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export { router as movieController };
