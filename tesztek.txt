@@ -1,0 +1,5 @@
+http://localhost:3300/api/movies - GET --> Filmek liastázása
+http://localhost:3300/api/movies/:1 - GET --> Filmek liastázása ID szerint
+http://localhost:3300/api/movies - POST --> Film hozzáadáása
+http://localhost:3300/api/movies/:1 - PUT --> Film szerkesztése
+http://localhost:3300/api/movies/:1  - DELETE --> Film törlése
