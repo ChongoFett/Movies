@@ -1,0 +1,5 @@
+model Director {
+    id   Int    @id @default(autoincrement())
+    name String
+    movies Movie[]
+}

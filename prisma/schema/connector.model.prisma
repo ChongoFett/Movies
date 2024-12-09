@@ -1,0 +1,17 @@
+model MovieActor {
+    movieId Int
+    actorId Int
+    movie   Movie @relation(fields: [movieId], references: [id])
+    actor   Actor @relation(fields: [actorId], references: [id])
+
+    @@id([movieId, actorId])
+}
+
+model MovieGenre {
+    movieId Int
+    genreId Int
+    movie   Movie @relation(fields: [movieId], references: [id])
+    genre   Genre @relation(fields: [genreId], references: [id])
+
+    @@id([movieId, genreId])
+}

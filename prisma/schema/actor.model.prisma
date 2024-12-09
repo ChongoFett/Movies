@@ -1,0 +1,5 @@
+model Actor {
+    id   Int    @id @default(autoincrement())
+    name String
+    movies MovieActor[]
+}
