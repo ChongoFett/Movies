@@ -1,56 +1,65 @@
-const express = require("express");
-const router = express.Router();
-const DirectorService = require("./director.service");
+import express from "express";
+import {
+  createDirector,
+  getDirectorById,
+  updateDirector,
+  deleteDirector,
+  getAllDirectors,
+} from "../services/director.service.js";
 
-router.post("/", async (req, res) => {
+const router = express.Router();
+
+router.get("/getAll", async (req, res) => {
   try {
-    const director = await DirectorService.createDirector(req.body);
-    res.status(201).json(director);
+    const data = await getAllDirectors();
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/add", async (req, res) => {
+  try {
+    const data = req.body;
+    const newDirector = await createDirector(data);
+    res.status(201).json(newDirector);
+  } catch (error) {
+    res.status(409).json({ message: "Error creating director" });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const director = await DirectorService.getDirectorById(req.params.id);
+    const { id } = req.params;
+    const director = await getDirectorById(id);
     if (director) {
       res.status(200).json(director);
     } else {
-      res.status(404).json({ error: "Director not found" });
+      res.status(404).json({ message: "Director not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   try {
-    const director = await DirectorService.updateDirector(
-      req.params.id,
-      req.body
-    );
-    res.status(200).json(director);
+    const { id } = req.params;
+    const data = req.body;
+    const updatedDirector = await updateDirector(id, data);
+    res.status(200).json(updatedDirector);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(409).json({ message: "Error updating director" });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   try {
-    await DirectorService.deleteDirector(req.params.id);
-    res.status(204).send();
+    const { id } = req.params;
+    await deleteDirector(id);
+    res.status(204).json({ message: "Director successfully deleted" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get("/", async (req, res) => {
-  try {
-    const directors = await DirectorService.getAllDirectors();
-    res.status(200).json(directors);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

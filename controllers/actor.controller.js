@@ -1,53 +1,65 @@
-const express = require("express");
-const router = express.Router();
-const ActorService = require("./actor.service");
+import express from "express";
+import {
+  createActor,
+  getActorById,
+  updateActor,
+  deleteActor,
+  getAllActors,
+} from "../services/actor.service.js";
 
-router.post("/", async (req, res) => {
+const router = express.Router();
+
+router.get("/getAll", async (req, res) => {
   try {
-    const actor = await ActorService.createActor(req.body);
-    res.status(201).json(actor);
+    const data = await getAllActors();
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/add", async (req, res) => {
+  try {
+    const data = req.body;
+    const newActor = await createActor(data);
+    res.status(201).json(newActor);
+  } catch (error) {
+    res.status(409).json({ message: "Error creating actor" });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const actor = await ActorService.getActorById(req.params.id);
+    const { id } = req.params;
+    const actor = await getActorById(id);
     if (actor) {
       res.status(200).json(actor);
     } else {
-      res.status(404).json({ error: "Actor not found" });
+      res.status(404).json({ message: "Actor not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   try {
-    const actor = await ActorService.updateActor(req.params.id, req.body);
-    res.status(200).json(actor);
+    const { id } = req.params;
+    const data = req.body;
+    const updatedActor = await updateActor(id, data);
+    res.status(200).json(updatedActor);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(409).json({ message: "Error updating actor" });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   try {
-    await ActorService.deleteActor(req.params.id);
-    res.status(204).send();
+    const { id } = req.params;
+    await deleteActor(id);
+    res.status(204).json({ message: "Actor successfully deleted" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get("/", async (req, res) => {
-  try {
-    const actors = await ActorService.getAllActors();
-    res.status(200).json(actors);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

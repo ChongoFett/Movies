@@ -1,120 +1,109 @@
-const express = require("express");
-const MovieService = require("./movie.service");
+import express from "express";
+import {
+  listAllMovies,
+  getMovieById,
+  addMovie,
+  editMovie,
+  deleteMovie,
+  addActorToMovie,
+  removeActorFromMovie,
+  addGenreToMovie,
+  removeGenreFromMovie,
+} from "../services/movie.service.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/getAll", async (req, res) => {
   try {
-    const movies = await MovieService.listAll();
-    res.json(movies);
+    const data = await listAllMovies();
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const movie = await MovieService.getById(req.params.id);
+    const { id } = req.params;
+    const movie = await getMovieById(id);
     if (movie) {
-      res.json(movie);
+      res.status(200).json(movie);
     } else {
-      res.status(404).json({ error: "Movie not found" });
+      res.status(404).json({ message: "Movie not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
-    const newMovie = await MovieService.add(req.body);
+    const movieData = req.body;
+    const newMovie = await addMovie(movieData);
     res.status(201).json(newMovie);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(409).json({ message: "Error creating movie" });
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   try {
-    const updatedMovie = await MovieService.edit(req.params.id, req.body);
-    res.json(updatedMovie);
+    const { id } = req.params;
+    const movieData = req.body;
+    const updatedMovie = await editMovie(id, movieData);
+    res.status(200).json(updatedMovie);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(409).json({ message: "Error updating movie" });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   try {
-    await MovieService.delete(req.params.id);
-    res.status(204).end();
+    const { id } = req.params;
+    await deleteMovie(id);
+    res.status(204).json({ message: "Movie successfully deleted" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.post("/:movieId/actors/:actorId", async (req, res) => {
   try {
-    const updatedMovie = await MovieService.edit(req.params.id, req.body);
-    res.json(updatedMovie);
+    const { movieId, actorId } = req.params;
+    await addActorToMovie(movieId, actorId);
+    res.status(201).json({ message: "Actor successfully added to movie" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(409).json({ message: "Error adding actor to movie" });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:movieId/actors/:actorId", async (req, res) => {
   try {
-    await MovieService.delete(req.params.id);
-    res.status(204).end();
+    const { movieId, actorId } = req.params;
+    await removeActorFromMovie(movieId, actorId);
+    res.status(204).json({ message: "Actor successfully removed from movie" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-router.post("/:id/actors/:actorId", async (req, res) => {
+router.post("/:movieId/genres/:genreId", async (req, res) => {
   try {
-    const result = await MovieService.addActorToMovie(
-      req.params.id,
-      req.params.actorId
-    );
-    res.json(result);
+    const { movieId, genreId } = req.params;
+    await addGenreToMovie(movieId, genreId);
+    res.status(201).json({ message: "Genre successfully added to movie" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(409).json({ message: "Error adding genre to movie" });
   }
 });
 
-router.delete("/:id/actors/:actorId", async (req, res) => {
+router.delete("/:movieId/genres/:genreId", async (req, res) => {
   try {
-    const result = await MovieService.removeActorFromMovie(
-      req.params.id,
-      req.params.actorId
-    );
-    res.json(result);
+    const { movieId, genreId } = req.params;
+    await removeGenreFromMovie(movieId, genreId);
+    res.status(204).json({ message: "Genre successfully removed from movie" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.post("/:id/genres/:genreId", async (req, res) => {
-  try {
-    const result = await MovieService.addGenreToMovie(
-      req.params.id,
-      req.params.genreId
-    );
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.delete("/:id/genres/:genreId", async (req, res) => {
-  try {
-    const result = await MovieService.removeGenreFromMovie(
-      req.params.id,
-      req.params.genreId
-    );
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
